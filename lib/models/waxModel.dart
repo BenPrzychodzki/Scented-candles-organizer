@@ -14,9 +14,10 @@ class WaxModel {
   int power;
   int rating;
   int amount;
+  int color;
 
   WaxModel({this.id, this.propType, this.name, this.brand, this.description,
-    this.power, this.rating, this.amount});
+    this.power, this.rating, this.amount, this.color});
 
   factory WaxModel.fromJson(Map<String, dynamic> json) => new WaxModel(
     id: json['id'],
@@ -27,6 +28,7 @@ class WaxModel {
     power: json['power'],
     rating: json['rating'],
     amount: json['amount'],
+    color: json['color'],
   );
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class WaxModel {
       'power': power,
       'rating': rating,
       'amount': amount,
+      'color': color,
     };
   }
 }

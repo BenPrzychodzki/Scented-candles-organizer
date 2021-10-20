@@ -3,11 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wax_picker/utils/Database.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:wax_picker/utils/avg_color.dart';
 
-class DetailedView extends StatelessWidget {
+class DetailedView extends StatefulWidget {
 
   final item;
   DetailedView({this.item});
+
+  @override
+  _DetailedViewState createState() => _DetailedViewState();
+}
+
+class _DetailedViewState extends State<DetailedView> {
+  File _image;
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -21,31 +32,86 @@ class DetailedView extends StatelessWidget {
         },
         child: Column(
           children: [
-            ClipPath(
-              clipper: MyCustomClipper(),
-              child: Container(
-                height: 350,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.deepPurple[700],
-                          Colors.deepPurple[300],
-                        ]
-                    )
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ClipPath(
+                clipper: MyCustomClipper(),
+                child: Container(
+                  height: 300,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            new Color(widget.item.color),
+                            Colors.deepPurple[300],
+                          ]
+                      )
+                  ),
                 ),
               ),
+              _image == null ? Positioned(
+                  bottom: 125.0,
+                  right: 0.0,
+                  left: 0.0,
+                  child: Container(
+                    child:  Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.add_a_photo),
+                          iconSize: 50,
+                          color: new Color(widget.item.color).computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                          onPressed: () async {
+                            final pickedFile = await picker.getImage(source: ImageSource.gallery, imageQuality: 100);
+
+                            if (pickedFile!=null) {
+                              widget.item.color = await getAvgColor(File(pickedFile.path));
+                              DBProvider.db.updateWax(widget.item);
+                            }
+
+                            setState(() {
+                              if (pickedFile!=null) {
+                                _image=File(pickedFile.path);
+                              }
+                            });
+                          },
+                        ),
+                        Text(
+                          "Add image",
+                          style: TextStyle(
+                            color: new Color(widget.item.color).computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                          ),
+                        )
+                      ],
+                    )
+                    )
+                  ) : Positioned(
+                    bottom: -40,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      child: CircleAvatar(
+                      radius: 80,
+                      backgroundColor: new Color(widget.item.color),
+                      child: ClipOval(child: Image.file(_image))
+                ),
+                    ),
+                  )
+            ]
+            ),
+            SizedBox(
+              height: 40,
             ),
             Text(
-              '${item.name}',
+              '${widget.item.name}',
               style: TextStyle(
                 fontSize: 25
               ),
             ),
             Text(
-              '${item.description}',
+              '${widget.item.description}',
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: 15,
@@ -62,10 +128,10 @@ class DetailedView extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                        'Ocena'
+                        'Rating'
                     ),
                     RatingBar.builder(
-                      initialRating: item.rating.toDouble(),
+                      initialRating: widget.item.rating.toDouble(),
                       minRating: 1,
                       itemSize: 20,
                       allowHalfRating: false,
@@ -75,8 +141,8 @@ class DetailedView extends StatelessWidget {
                         color: Colors.amber,
                       ),
                       onRatingUpdate: (rating) {
-                        item.rating = rating.toInt();
-                        DBProvider.db.updateWax(item);
+                        widget.item.rating = rating.toInt();
+                        DBProvider.db.updateWax(widget.item);
                         print(rating);
                       },
                     ),
@@ -85,10 +151,10 @@ class DetailedView extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                        'Moc'
+                        'Power'
                     ),
                     RatingBar.builder(
-                      initialRating: item.power.toDouble(),
+                      initialRating: widget.item.power.toDouble(),
                       minRating: 1,
                       itemSize: 20,
                       allowHalfRating: false,
@@ -98,8 +164,8 @@ class DetailedView extends StatelessWidget {
                         color: Colors.amber,
                       ),
                       onRatingUpdate: (rating) {
-                        item.power = rating.toInt();
-                        DBProvider.db.updateWax(item);
+                        widget.item.power = rating.toInt();
+                        DBProvider.db.updateWax(widget.item);
                         print(rating);
                       },
                     ),
@@ -111,7 +177,7 @@ class DetailedView extends StatelessWidget {
               height: 50,
             ),
             Text(
-              "${item.brand}",
+              "${widget.item.brand}",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 40,

@@ -46,18 +46,19 @@ class _AddPopupState extends State<AddPopup> {
     return AlertDialog(
       actions: [
         TextButton(
-            child: Text("Dodaj",
+            child: Text("Add",
               style: TextStyle(color: Colors.deepPurple[400]),
             ),
             onPressed: () async {
-              var newDBWax = WaxModel(id: 0, propType: waxButtonBlocked ? 'Świeca' : 'Wosk', name: nameController.text,
-                  brand: dropdownValue, description: descController.text, power: power, rating: rate, amount: 1);
+              var newDBWax = WaxModel(id: 0, propType: waxButtonBlocked ? 'Candle' : 'Wax', name: nameController.text,
+                  brand: dropdownValue, description: descController.text, power: power, rating: rate, amount: 1,
+              color: Colors.deepPurple[400].value);
               await DBProvider.db.newWax(newDBWax);
               Navigator.of(context).pop();
             }
         )
       ],
-      title: Text('Dodaj nowy przedmiot...'),
+      title: Text('Add new item...'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -69,13 +70,13 @@ class _AddPopupState extends State<AddPopup> {
                     icon: Icon(Icons.filter_vintage),
                     disabledColor: Colors.indigo,
                     color: Colors.grey,
-                    tooltip: 'Wosk',
+                    tooltip: 'Wax',
                     onPressed: waxButtonBlocked ? disableButton : null),
                 IconButton(
                   icon: Icon(Icons.cake),
                   disabledColor: Colors.indigo,
                   color: Colors.grey,
-                  tooltip: 'Świeca',
+                  tooltip: 'Candle',
                   onPressed: candleButtonBlocked ? disableButton : null),
               ],
             ),
@@ -102,19 +103,19 @@ class _AddPopupState extends State<AddPopup> {
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                labelText: "Nazwa",
+                labelText: "Name",
               ),
             ),
             TextField(
               controller: descController,
               decoration: InputDecoration(
-                labelText: "Opis",
+                labelText: "Description",
               ),
             ),
             SizedBox(
               height: 30.0,
             ),
-            Text("Moc:"),
+            Text("Power:"),
             RatingBar.builder(
               initialRating: 1,
               minRating: 1,
@@ -133,7 +134,7 @@ class _AddPopupState extends State<AddPopup> {
             SizedBox(
               height: 10.0,
             ),
-            Text("Ocena:"),
+            Text("Rating:"),
             RatingBar.builder(
               initialRating: 1,
               minRating: 1,

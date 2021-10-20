@@ -25,11 +25,11 @@ class DBProvider {
 
   initDB() async {
     return await openDatabase(
-        join(await getDatabasesPath(), 'smells_v2.db'),
+        join(await getDatabasesPath(), 'smells_v3.db'),
         onCreate: (db, version) async {
           await db.execute('''
             CREATE TABLE waxes (
-              id INTEGER, propType TEXT, name TEXT, brand TEXT, description TEXT, power INTEGER, rating INTEGER, amount INTEGER
+              id INTEGER, propType TEXT, name TEXT, brand TEXT, description TEXT, power INTEGER, rating INTEGER, amount INTEGER, color INTEGER
             )
           '''); //kod zapisany w SQlite który utworzył tabelę na dane.
         },
@@ -42,10 +42,10 @@ class DBProvider {
 
     var res = await db.rawInsert('''
       INSERT INTO waxes (
-        id, propType, name, brand, description, power, rating, amount
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        id, propType, name, brand, description, power, rating, amount, color
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', [newWax.id, newWax.propType, newWax.name, newWax.brand,
-      newWax.description, newWax.power, newWax.rating, newWax.amount]); //wartosci z klasy username zostana wpisane w poszczegolne miejsca w tabeli
+      newWax.description, newWax.power, newWax.rating, newWax.amount, newWax.color]); //wartosci z klasy username zostana wpisane w poszczegolne miejsca w tabeli
 
     return res;
   }

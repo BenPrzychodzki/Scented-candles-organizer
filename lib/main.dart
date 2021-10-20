@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wax_picker/models/waxModel.dart';
 import 'package:wax_picker/utils/Database.dart';
 import 'package:animations/animations.dart';
@@ -25,6 +26,11 @@ class WaxPicker extends StatefulWidget {
 
 class _WaxPickerState extends State<WaxPicker> {
 
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  }
+
   String username = 'Ben';
   var whichPressed = 'Wax';
 
@@ -45,7 +51,7 @@ class _WaxPickerState extends State<WaxPicker> {
                   child: Center(child: Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,0,5),
                     child: Text(
-                      "Dzień dobry, $username",
+                      "Good Morning, $username",
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
@@ -107,7 +113,7 @@ class _WaxPickerState extends State<WaxPicker> {
                               transitionDuration: Duration(milliseconds: 600),
                               closedBuilder: (context, action) {
                                 return Card(
-                                  color: Colors.deepPurple[400],
+                                  color: new Color(item.color),
                                   child: Column(
                                     children: [
                                       ListTile(
