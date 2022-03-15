@@ -1,5 +1,5 @@
 # Scented candles organizer
- Creation time: March, 2021
+The app was made in March, 2021
  
  Flutter-based scented candles organizer app. Users can save, edit and manage information about their collection. Every data entry is stored in an SQL database.
 
